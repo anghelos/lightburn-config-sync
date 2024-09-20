@@ -31,6 +31,7 @@ IF NOT EXIST ".git" (
 
 git add .
 git commit -m "Update config with batch shortcut"
+git branch -M main
 git push -u origin main
 
 ECHO: & ECHO -------------- & ECHO: & ECHO Done! & ECHO: & ECHO -------------- &  ECHO: & PAUSE 
