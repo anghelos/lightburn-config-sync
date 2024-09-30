@@ -1,5 +1,7 @@
+mode con: cols=60 lines=16
 @echo off
-echo Updating Prusaslicer Config
+echo:
+echo Updating Lightburn Config
 
 set repoauthor=YOUR GITHUB USERNAME
 set reponame=YOUR GITHUB REPOSITORY NAME
@@ -17,8 +19,18 @@ git clone %remotesource% --quiet || goto:othererror
 
 set source=%CD%/%reponame%
 set destination=%localappdata%\Lightburn
+set librarydestination=C:\Lightburn_Libraries
 
+robocopy %source% %librarydestination% *.clb /move
 robocopy %source% %destination% /move
+
+echo:
+echo --------------
+echo:
+echo Lightburn Config Updated
+echo Cleaning up...
+timeout /t 1 /nobreak >nul
+RD /S /Q %reponame%
 
 exit /b 0
 
