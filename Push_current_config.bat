@@ -1,7 +1,7 @@
 @echo off
 
-set repoauthor=YOUR GITHUB USERNAME
-set reponame=YOUR GITHUB REPOSITORY NAME
+set repoauthor=anghelos
+set reponame=vanier=Lightburn-config
 
 :: Check if repoauthor has been set
 IF NOT "%repoauthor%"=="%repoauthor:YOUR GITHUB USERNAME=%" (
@@ -27,6 +27,12 @@ IF NOT EXIST ".git" (
     echo .git folder not found, initializing repository...
     git init || goto :othererror
     git remote add origin %remotesource% || goto :othererror
+)
+
+::store current username in a file
+IF NOT EXIST "username.txt" (
+    echo username.txt not found, creating one...
+    echo %USERNAME% > username.txt
 )
 
 git add .

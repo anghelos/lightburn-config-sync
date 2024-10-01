@@ -1,10 +1,11 @@
 mode con: cols=60 lines=16
 @echo off
 echo:
-echo Updating Lightburn Config
+echo Updating Lightburn Config...
 
-set repoauthor=YOUR GITHUB USERNAME
-set reponame=YOUR GITHUB REPOSITORY NAME
+
+set repoauthor=anghelos
+set reponame=vanier-lightburn-config
 
 :: Check if repoauthor has been set
 IF NOT "%repoauthor%"=="%repoauthor:YOUR GITHUB USERNAME=%" (
@@ -17,11 +18,22 @@ set remotesource=https://github.com/%repoauthor%/%reponame%.git
 git version >nul 2>&1 || goto :giterror
 git clone %remotesource% --quiet || goto:othererror
 
+echo Got files, replacing username instances in prefs.ini file...
+
+:: get contents of username.txt
+set oldusername=<%reponame%\username.txt
+
+:: Replace all instances of previous username with new one in prefs.ini file
+powershell -Command "(gc %reponame%\prefs.ini) -replace '%oldusername%', '%USERNAME%' | Out-File -encoding UTF8 prefs.ini"
+
+echo --------------
+echo:
+echo Done, moving files to Lightburn folder...
+
+
 set source=%CD%/%reponame%
 set destination=%localappdata%\Lightburn
-set librarydestination=C:\Lightburn_Libraries
 
-robocopy %source% %librarydestination% *.clb /move
 robocopy %source% %destination% /move
 
 echo:
@@ -29,7 +41,7 @@ echo --------------
 echo:
 echo Lightburn Config Updated
 echo Cleaning up...
-timeout /t 1 /nobreak >nul
+timeout /t 3 /nobreak >nul
 RD /S /Q %reponame%
 
 exit /b 0
