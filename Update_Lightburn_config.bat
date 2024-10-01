@@ -18,25 +18,29 @@ set remotesource=https://github.com/%repoauthor%/%reponame%.git
 git version >nul 2>&1 || goto :giterror
 git clone %remotesource% --quiet || goto:othererror
 
-echo Got files, replacing username instances in prefs.ini file...
+
 
 :: get contents of username.txt
-set oldusername=<%reponame%\username.txt
+set /p oldusername=<%reponame%\username.txt
+
+::remove spaces from oldusername
+set oldusername=%oldusername: =%
+
+echo: & echo --------------- & echo: & echo Got files, replacing instances of %oldusername% with %username% in prefs.ini file...
 
 :: Replace all instances of previous username with new one in prefs.ini file
-powershell -Command "(gc %reponame%\prefs.ini) -replace '%oldusername%', '%USERNAME%' | Out-File -encoding UTF8 prefs.ini"
+start /b /wait powershell -Command "(gc %reponame%\prefs.ini) -replace '%oldusername%', '%USERNAME%' | Out-File -encoding UTF8 %reponame%\prefs.ini"
 
+echo:
 echo --------------
 echo:
 echo Done, moving files to Lightburn folder...
 
-
 set source=%CD%/%reponame%
 set destination=%localappdata%\Lightburn
 
-robocopy %source% %destination% /move
+robocopy %source% %destination% /move /NFL /NDL /NJH /NJS /NC
 
-echo:
 echo --------------
 echo:
 echo Lightburn Config Updated
